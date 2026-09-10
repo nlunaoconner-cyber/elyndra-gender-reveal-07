@@ -1,0 +1,1205 @@
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chá de Revelação · Elyndra & Lucien</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            min-height: 100vh;
+            background: #f7f3ed;
+            color: #4a403a;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center; /* Ajustado para centrar verticalmente de forma harmoniosa */
+            padding: 40px 20px; /* Aumentado o espaçamento geral para respiro lateral e inferior */
+            overflow-x: hidden;
+            overflow-y: auto;
+            transition: background 2s ease;
+        }
+
+        body.dark-mode {
+            background: #070608;
+            color: #f7f3ed;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: auto;
+            padding-bottom: 20px; /* Garante margem inferior de segurança */
+        }
+
+        .card {
+            background: rgba(255, 252, 248, 0.98);
+            border: 1px solid rgba(212, 184, 150, 0.4);
+            border-radius: 24px;
+            padding: 40px 32px; /* Espaçamento interno lateral equilibrado */
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(120, 100, 85, 0.12);
+            transition: all 0.5s ease;
+        }
+
+        body.dark-mode .card {
+            background: rgba(20, 17, 24, 0.95);
+            border-color: rgba(184, 154, 116, 0.2);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            color: #f7f3ed;
+        }
+
+        h1, h2, h3, .title-font { 
+            font-family: 'Playfair Display', serif; 
+            font-weight: 400; 
+            font-style: italic;
+        }
+
+        .cinzel-font {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        p {
+            font-size: 0.92rem; 
+            line-height: 1.7;
+            color: #554840; 
+            margin-bottom: 14px;
+            white-space: pre-line;
+            padding: 0 4px;
+        }
+        body.dark-mode p { color: #d0c5bc; }
+
+        .gold-text {
+            background: linear-gradient(135deg, #a88b68, #8a6a47, #5c4328);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #d6be9c, #b89a74);
+            color: #ffffff; border: none;
+            padding: 14px 28px; border-radius: 30px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.82rem; font-weight: 600;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            cursor: pointer; margin-top: 15px;
+            box-shadow: 0 10px 25px rgba(184, 154, 116, 0.35);
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-secondary {
+            background: rgba(235, 222, 208, 0.7);
+            color: #63564e;
+            border: 1px solid rgba(184, 154, 116, 0.4);
+            box-shadow: none;
+        }
+        body.dark-mode .btn-secondary {
+            background: rgba(50, 42, 56, 0.8);
+            color: #e2d2c3;
+            border-color: rgba(184, 154, 116, 0.3);
+        }
+
+        /* ENVELOPE */
+        .envelope-wrapper {
+            width: 170px; height: 120px; margin: 10px auto 25px;
+            background: linear-gradient(145deg, #fffcf7, #f3e9dc);
+            border-radius: 16px;
+            border: 1px solid rgba(184, 154, 116, 0.5);
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 15px 35px rgba(140, 115, 90, 0.15);
+        }
+        .envelope-seal {
+            width: 52px; height: 52px;
+            background: radial-gradient(circle, #e2c2a0, #b8946e);
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; color: #ffffff;
+            font-family: 'Cinzel', serif; font-size: 1.1rem; font-weight: 700;
+            border: 2px solid rgba(255,255,255,0.8);
+        }
+        .tap-hint {
+            font-size: 0.8rem; letter-spacing: 2px;
+            text-transform: uppercase; color: #a88b68;
+        }
+
+        /* CONTAGEM DECRESCENTE */
+        .countdown-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 8px; margin: 20px 0 15px;
+        }
+        .count-box {
+            background: rgba(245, 235, 224, 0.6);
+            border: 1px solid rgba(184, 154, 116, 0.3);
+            border-radius: 14px; padding: 10px 2px;
+        }
+        body.dark-mode .count-box {
+            background: rgba(45, 38, 51, 0.6);
+            border-color: rgba(184, 154, 116, 0.2);
+        }
+        .count-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.7rem; font-weight: 600; color: #7a5e43; line-height: 1;
+        }
+        body.dark-mode .count-num { color: #e2c2a0; }
+        .count-label {
+            font-size: 0.55rem; text-transform: uppercase;
+            letter-spacing: 1px; color: #9e8d81; margin-top: 5px;
+        }
+
+        /* SECÇÃO DE ATIVIDADES */
+        .activities-box {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed rgba(184, 154, 116, 0.4);
+            text-align: center;
+        }
+        .activity-menu-grid {
+            display: flex; flex-direction: column; gap: 10px; margin-top: 12px;
+        }
+        .activity-btn-item {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(184, 154, 116, 0.4);
+            border-radius: 14px; padding: 12px; text-align: left;
+            cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+            transition: background 0.2s;
+        }
+        body.dark-mode .activity-btn-item {
+            background: rgba(40, 34, 46, 0.9);
+            border-color: rgba(184, 154, 116, 0.25);
+        }
+        .activity-btn-item span { font-weight: 600; color: #7a5e43; font-size: 0.85rem; }
+        body.dark-mode .activity-btn-item span { color: #e2c2a0; }
+        .activity-btn-item small { color: #a88b68; font-size: 0.72rem; }
+
+        .activity-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.6); z-index: 200; justify-content: center; align-items: center; padding: 15px;
+        }
+        .activity-modal-content {
+            background: #fffcf8; border-radius: 20px; padding: 25px; width: 100%; max-width: 400px;
+            border: 1px solid rgba(184, 154, 116, 0.5); text-align: left; position: relative;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto;
+        }
+        body.dark-mode .activity-modal-content {
+            background: #1a161f; color: #f7f3ed;
+            border-color: rgba(184, 154, 116, 0.3);
+        }
+        .close-modal {
+            position: absolute; top: 15px; right: 18px; font-size: 1.4rem; cursor: pointer; color: #8a7a6f;
+        }
+        .input-participant {
+            width: 100%; padding: 10px; border-radius: 10px; border: 1px solid rgba(184, 154, 116, 0.4);
+            margin: 8px 0 14px; font-family: 'Montserrat', sans-serif; font-size: 0.85rem; outline: none; background: #fff;
+        }
+        body.dark-mode .input-participant {
+            background: #2a2431; color: #fff; border-color: rgba(184, 154, 116, 0.3);
+        }
+
+        .frame-canvas-container {
+            border: 8px solid #d4b896; border-radius: 16px; background: #fff;
+            padding: 10px; box-shadow: inset 0 0 10px rgba(0,0,0,0.08); margin-top: 8px;
+        }
+        .drawing-canvas {
+            width: 100%; height: 160px; background: #fff; cursor: crosshair; touch-action: none; display: block;
+        }
+        
+        .color-palette {
+            display: flex; gap: 8px; justify-content: center; margin-bottom: 8px; flex-wrap: wrap;
+        }
+        .color-swatch {
+            width: 26px; height: 26px; border-radius: 50%; cursor: pointer;
+            border: 2px solid transparent; box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            transition: transform 0.1s ease;
+        }
+        .color-swatch:hover { transform: scale(1.15); }
+        .color-swatch.active-color { border-color: #4a403a; transform: scale(1.15); }
+        body.dark-mode .color-swatch.active-color { border-color: #f7f3ed; }
+
+        .vote-btns { display: flex; gap: 10px; margin-top: 10px; }
+        .vote-btn {
+            flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #d4b896;
+            background: #fff; cursor: pointer; font-weight: 600; font-size: 0.85rem; text-align: center;
+        }
+        body.dark-mode .vote-btn { background: #2a2431; color: #fff; }
+        .vote-boy { color: #5b8db8; border-color: #5b8db8; }
+        .vote-girl { color: #b89a74; border-color: #b89a74; }
+        .vote-btn.selected { background: rgba(184, 154, 116, 0.2); font-weight: 700; }
+
+        #cinematic-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #000000; opacity: 0; pointer-events: none; z-index: 250;
+            transition: opacity 2s ease;
+        }
+        #cinematic-overlay.active { opacity: 1; pointer-events: auto; }
+
+        #fireworks-canvas {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 260; display: none;
+        }
+
+        #pink-smoke-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 255; opacity: 0;
+            box-shadow: inset 0 0 160px 80px rgba(212, 175, 55, 0.5), inset 0 0 320px 140px rgba(184, 134, 11, 0.35);
+            transition: opacity 2.5s ease;
+        }
+        #pink-smoke-overlay.active { opacity: 1; }
+
+        #whack-stork-container {
+            position: fixed; z-index: 290; display: none; cursor: pointer; width: 130px;
+            filter: drop-shadow(2px 5px 12px rgba(0,0,0,0.3)); transition: transform 0.15s ease;
+            touch-action: manipulation;
+        }
+        #whack-stork-container:active { transform: scale(0.9); }
+
+        #stork-alert-banner {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(26, 22, 31, 0.96); color: #d4b896; border: 1px solid rgba(212, 184, 150, 0.4);
+            padding: 22px 25px; border-radius: 20px; font-size: 0.95rem; letter-spacing: 1px;
+            z-index: 295; display: none; box-shadow: 0 20px 50px rgba(0,0,0,0.6); text-align: center;
+            font-family: 'Montserrat', sans-serif; font-weight: 600; max-width: 90%; width: 320px;
+        }
+
+        #stork-countdown-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(7, 6, 8, 0.92); z-index: 300; display: none;
+            justify-content: center; align-items: center; flex-direction: column; text-align: center; padding: 20px;
+        }
+        #stork-countdown-text {
+            font-family: 'Playfair Display', serif; font-size: 2.3rem; color: #d4b896; margin-bottom: 15px; font-style: italic;
+        }
+        #stork-countdown-number {
+            font-family: 'Playfair Display', serif; font-size: 5rem; color: #ffffff; font-weight: 700;
+            animation: pulseNum 0.8s infinite alternate;
+        }
+        @keyframes pulseNum {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.1); opacity: 1; }
+        }
+
+        .pink-title { color: #d4af37; font-size: 1.6rem; margin-bottom: 12px; }
+        .gender-tag {
+            display: inline-block; background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(184, 134, 11, 0.2));
+            color: #f3e5ab; border: 1px solid rgba(212, 175, 55, 0.5);
+            padding: 8px 20px; border-radius: 25px; font-size: 0.9rem; letter-spacing: 2px; font-weight: 600;
+            margin: 10px 0 18px;
+        }
+        .polaroid-frame {
+            background: #ffffff; padding: 12px 12px 22px 12px;
+            border-radius: 12px; box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
+            margin: 15px 0; color: #4a3e36;
+        }
+        .photo-img {
+            width: 100%; height: 240px; object-fit: cover;
+            border-radius: 6px; background-color: #f3ede6;
+        }
+        .photo-caption {
+            color: #4a3e36; font-family: 'Playfair Display', serif;
+            font-style: italic; font-size: 1rem; margin-top: 12px; text-align: center;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div id="cinematic-overlay"></div>
+    <div id="pink-smoke-overlay"></div>
+    <canvas id="fireworks-canvas"></canvas>
+
+    <div id="stork-alert-banner">
+        <p style="margin-bottom: 15px; color: #d4b896; font-size: 0.95rem; line-height: 1.5;">Oh não! A cegonha roubou a sua cartinha. Tente pegar o mais rápido possível!</p>
+        <button class="btn" type="button" onclick="dismissStorkAlert()" style="margin-top: 0; padding: 10px 28px; font-size: 0.8rem; width: 100%;">OK</button>
+    </div>
+
+    <div id="stork-countdown-overlay">
+        <div id="stork-countdown-text">Preparados?</div>
+        <div id="stork-countdown-number"></div>
+    </div>
+    
+    <div id="whack-stork-container" onclick="catchWhackStork()" ontouchend="catchWhackStork(event)" title="Toca na cegonha!">
+        <svg viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg">
+            <path d="M70,110 Q90,75 120,85 T160,70 Q140,120 90,130 Z" fill="#ffffff" stroke="#e0e0e0" stroke-width="2"/>
+            <path d="M90,95 Q120,55 140,85 Q115,100 90,95 Z" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="1.5"/>
+            <path d="M120,85 Q145,40 145,25 Q145,15 155,20 Q160,25 155,35 Q150,50 130,80" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
+            <circle cx="155" cy="20" r="14" fill="#ffffff" stroke="#e0e0e0" stroke-width="1.5"/>
+            <circle cx="159" cy="18" r="2.5" fill="#333"/>
+            <path d="M162,15 Q166,13 165,18" fill="none" stroke="#333" stroke-width="1" stroke-linecap="round"/>
+            <path d="M169,18 L198,13 L171,24 Z" fill="#ff9800"/>
+            <line x1="90" y1="130" x2="80" y2="155" stroke="#ff9800" stroke-width="3" stroke-linecap="round"/>
+            <line x1="105" y1="130" x2="95" y2="155" stroke="#ff9800" stroke-width="3" stroke-linecap="round"/>
+            
+            <g transform="translate(145, 20)">
+                <path d="M15,2 Q18,12 25,20" fill="none" stroke="#d4af37" stroke-width="2"/>
+                <path d="M15,20 Q5,30 10,50 Q25,60 40,50 Q45,30 35,20 Z" fill="#ffffff" stroke="#d4b896" stroke-width="2"/>
+                <circle cx="25" cy="20" r="4" fill="#d4af37"/>
+                <rect x="18" y="28" width="28" height="20" fill="#fff9c4" stroke="#d4af37" stroke-width="1.5" rx="2" transform="rotate(-10 18 28)"/>
+                <line x1="22" y1="34" x2="40" y2="34" stroke="#d4af37" stroke-width="1.2"/>
+                <line x1="22" y1="39" x2="33" y2="39" stroke="#b0bec5" stroke-width="1.2"/>
+                <circle cx="36" cy="42" r="2.5" fill="#d4af37"/>
+            </g>
+        </svg>
+    </div>
+
+    <div class="container">
+
+        <!-- ETAPA 1: ENVELOPE -->
+        <div id="stage-envelope" class="card" style="cursor: pointer;" onclick="openEnvelope()">
+            <div class="envelope-wrapper">
+                <div class="envelope-seal">E&L</div>
+            </div>
+            <h2 class="cinzel-font gold-text" style="font-size: 1.3rem; margin-bottom: 8px;">Um Convite Especial</h2>
+            <p class="tap-hint">Toque para abrir a carta</p>
+        </div>
+
+        <!-- ETAPA 2: O CONVITE -->
+        <div id="stage-invitation" class="card hidden">
+            <h1 class="gold-text" style="font-size: 1.8rem; margin-bottom: 15px;">Um pequeno segredo,<br>um amor imenso.</h1>
+            <p>
+Há uma nova vida a caminho, e com ela, um amor que já ocupa o lugar mais bonito dos nossos corações.
+</p>
+            <p>Guardámos este segredo com muito carinho… e agora queremos descobri-lo ao lado de quem torna a nossa vida especial. </p>
+            <p style="font-size: 1.05rem; color: #4a3e36; margin: 18px 0 10px;" class="title-font"><strong>
+Menino ou menina?</strong><br>
+Em breve, saberemos.</p>
+            
+            <div style="background: rgba(235, 222, 208, 0.4); border: 1px solid rgba(184, 154, 116, 0.3); border-radius: 20px; padding: 12px; margin: 15px 0;">
+                <p class="cinzel-font" style="font-size: 0.72rem; color: #7a5e43; margin: 0;">Quarta, 09 de Setembro de 2026 · 18:00</p>
+            </div>
+            
+            <p style="margin-top: 15px; font-size: 1.1rem; color: #7a5e43;" class="title-font">
+                Com todo o amor,<br><strong>Elyndra D'Astre & Lucien Gillies </strong>
+            </p>
+            
+            <button class="btn" type="button" onclick="confirmPresence()">Confirmar Presença</button>
+        </div>
+
+        <!-- ETAPA 3: CONTAGEM + ATIVIDADES -->
+        <div id="stage-countdown" class="card hidden">
+            <h2 class="cinzel-font gold-text" style="font-size: 1.3rem; margin-bottom: 6px;">Presença Confirmada!</h2>
+            <p style="font-size: 0.8rem; color: #7a6e65; margin-bottom: 10px;">Falta pouco para a grande revelação:</p>
+            
+            <div class="countdown-grid">
+                <div class="count-box"><div id="cd-days" class="count-num">00</div><div class="count-label">Dias</div></div>
+                <div class="count-box"><div id="cd-hours" class="count-num">00</div><div class="count-label">Horas</div></div>
+                <div class="count-box"><div id="cd-mins" class="count-num">00</div><div class="count-label">Min</div></div>
+                <div class="count-box"><div id="cd-secs" class="count-num">00</div><div class="count-label">Seg</div></div>
+            </div>
+
+            <div style="margin-top: 10px; display: flex; gap: 8px; justify-content: center;">
+                <button id="btn-test-reveal" class="btn btn-secondary hidden" type="button" onclick="startCinematicFireworksSequence()" style="font-size: 0.68rem; padding: 8px 12px;">✨ Testar Revelação</button>
+                <button class="btn btn-secondary" type="button" onclick="resetFlow()" style="font-size: 0.68rem; padding: 8px 12px; color: #b5386f; width: 100%;">🔄 Ver Envelope</button>
+            </div>
+
+            <div class="activities-box">
+                <p style="font-size: 0.82rem; margin-bottom: 15px; text-align: center; line-height: 1.6;">
+                    Vote no seu team (Girl ou Boy) antes que o cronômetro termine!
+                    
+Enquanto espera, participe nos nossos games: vote no seu palpite, desenhe um quadro, escreva uma cartinha para o baby ou jogue ping-pong de fraldas!
+                </p>
+
+                <div class="activity-menu-grid">
+                    <div class="activity-btn-item" onclick="openModal('modal-poll')">
+                        <div><span>🗳️ Votar no Team (Boy ou Girl)</span><br><small>Deixe claro o seu palpite</small></div>
+                        <span style="color: #b89a74;">➔</span>
+                    </div>
+
+                    <div class="activity-btn-item" onclick="openModal('modal-diaper-pong')">
+                        <div><span>🍼 Ping-Pong de Fraldas</span><br><small>Acerte a bola na fralda em movimento!</small></div>
+                        <span style="color: #b89a74;">➔</span>
+                    </div>
+
+                    <div class="activity-btn-item" onclick="openModal('modal-drawing')">
+                        <div><span>🎨 Desenhar um Quadro</span><br><small>Criar arte para o mini ser</small></div>
+                        <span style="color: #b89a74;">➔</span>
+                    </div>
+
+                    <div class="activity-btn-item" onclick="openModal('modal-message')">
+                        <div><span>💌 Escrever uma Cartinha</span><br><small>Deixar uma mensagem especial</small></div>
+                        <span style="color: #b89a74;">➔</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ETAPA 4: REVELAÇÃO -->
+        <div id="stage-reveal" class="card hidden">
+            <h1 class="pink-title">E o nosso pequeno segredo foi revelado… ♡
+</h1>
+            <p>Por tanto tempo imaginámos este momento, e hoje finalmente podemos partilhar convosco a nossa maior alegria.</p>
+            <p style="color: #000000; font-weight: 600; margin: 12px 0;">Team Blue/Pink, vocês ganharam esta batalha KKKKKK PARABÉNS!</p>
+            <div class="gender-tag">É ... 🤫</div>
+            <p>Um pequeno coração que já é profundamente amado, mesmo antes de conhecermos o seu rostinho.</p>
+            
+            <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 10px;">
+                <button class="btn" type="button" onclick="startPhotobook()">Ver Álbum de Fotos</button>
+            </div>
+        </div>
+
+        <!-- ETAPA 5: ÁLBUM DE FOTOS -->
+        <div id="stage-photobook" class="card hidden">
+            <p id="photo-counter" class="cinzel-font" style="font-size: 0.75rem; color: #d4af37; margin-bottom: 12px; text-align: center;">FOTO 1 DE 4</p>
+
+            <div class="polaroid-frame">
+                <img id="current-photo" class="photo-img" src="" alt="Foto">
+                <div id="current-caption" class="photo-caption"></div>
+            </div>
+
+            <button class="btn" type="button" onclick="nextPhoto()" style="width: 100%;">Seguinte ➔</button>
+        </div>
+
+        <!-- ETAPA 6: AGRADECIMENTO -->
+        <div id="stage-thanks" class="card hidden">
+            <h1 class="pink-title" style="font-size: 1.6rem; margin-bottom: 12px;">Obrigado do Fundo do Coração!
+</h1>
+            <p>Cada sorriso e cada abraço neste dia tornaram a nossa revelação num momento inesquecível.</p>
+            <p style="font-style: italic; color: #d4af37; margin-top: 12px;">Obrigado por celebrarem connosco este capítulo tão mágico! </p>
+            
+            <div class="activities-box" style="margin-top: 22px;">
+                <p style="font-size: 0.78rem; margin-bottom: 10px;">Ainda não deixou o seu toque de carinho?</p>
+                <div class="activity-menu-grid">
+                    <div class="activity-btn-item" onclick="openModal('modal-poll')">
+                        <div><span>🗳️ Votar / Palpite</span></div>
+                        <span>➔</span>
+                    </div>
+                    <div class="activity-btn-item" onclick="openModal('modal-diaper-pong')">
+                        <div><span>🍼 Ping-Pong de Fraldas</span></div>
+                        <span>➔</span>
+                    </div>
+                    <div class="activity-btn-item" onclick="openModal('modal-drawing')">
+                        <div><span>🎨 Desenhar Quadro</span></div>
+                        <span>➔</span>
+                    </div>
+                    <div class="activity-btn-item" onclick="openModal('modal-message')">
+                        <div><span>💌 Escrever Cartinha</span></div>
+                        <span>➔</span>
+                    </div>
+                </div>
+            </div>
+
+            <p style="margin-top: 22px; font-size: 1.05rem; color: #e2c2a0;" class="title-font">
+                Com todo o amor,<br><strong>Elyndra, Lucien & Bebé ♡</strong>
+            </p>
+        </div>
+
+    </div>
+
+    <!-- MODAIS -->
+    <div id="modal-poll" class="activity-modal">
+        <div class="activity-modal-content">
+            <span class="close-modal" onclick="closeModal('modal-poll')">&times;</span>
+            <h3 style="color: #e2c2a0; margin-bottom: 10px;">Palpite & Votação</h3>
+            <p style="font-size: 0.8rem; margin-bottom: 4px;">O seu nome:</p>
+            <input type="text" id="poll-name" class="input-participant" placeholder="Escreva o seu nome...">
+            
+            <p style="font-size: 0.8rem; margin-bottom: 8px;">Qual é o seu palpite?</p>
+            <div class="vote-btns">
+                <div class="vote-btn vote-boy" onclick="selectVote('boy', this)">🩵 MENINO</div>
+                <div class="vote-btn vote-girl" onclick="selectVote('girl', this)">🩷 MENINA</div>
+            </div>
+            <button class="btn" type="button" style="width: 100%; margin-top: 18px;" onclick="submitActivity('poll')">Enviar Votação ♡</button>
+        </div>
+    </div>
+
+    <div id="modal-diaper-pong" class="activity-modal">
+        <div class="activity-modal-content" style="max-width: 440px; text-align: center;">
+            <span class="close-modal" onclick="closeModal('modal-diaper-pong')">&times;</span>
+            <h3 style="color: #e2c2a0; margin-bottom: 5px;" class="cinzel-font">Ping-Pong de Fraldas</h3>
+            
+            <div id="pong-setup-screen">
+                <p style="font-size: 0.82rem; margin-bottom: 10px;">Insira o seu nome para entrar em jogo:</p>
+                <input type="text" id="pong-player-name" class="input-participant" placeholder="O seu nome + emoji (ex:. Elyndra 🦇)" style="text-align: center;">
+                <button class="btn" type="button" style="width: 100%; margin-top: 10px;" onclick="startDiaperGame()">Começar a Jogar 🍼</button>
+            </div>
+
+            <div id="pong-game-screen" class="hidden" style="margin-top: 10px;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 5px; font-weight: 600;">
+                    <span id="pong-current-player" style="color: #b89a74;">Jogador</span>
+                    <span>Tempo: <strong id="pong-timer" style="color: #554840;">02:00</strong> | Pontos: <strong id="pong-score" style="color: #7a5e43;">0</strong></span>
+                </div>
+                
+                <div id="pong-arena" style="position: relative; width: 100%; height: 240px; background: rgba(245, 235, 224, 0.4); border: 2px solid rgba(184, 154, 116, 0.4); border-radius: 14px; overflow: hidden; cursor: crosshair;" onclick="shootPongBall(event)">
+                    <div id="moving-diaper" style="position: absolute; bottom: 15px; left: 50px; width: 60px; height: 40px; background: #fff; border: 2px dashed #b89a74; border-radius: 10px 10px 20px 20px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                        🚼
+                    </div>
+                    <div id="pong-ball" style="position: absolute; top: 10px; width: 18px; height: 18px; border-radius: 50%; display: none; box-shadow: 0 2px 6px rgba(0,0,0,0.25); z-index: 10;"></div>
+                    
+                    <div id="pong-instruction" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 0.72rem; color: #8a7a6f; pointer-events: none; background: rgba(255,255,255,0.8); padding: 4px 8px; border-radius: 6px;">
+                        Clique na coluna desejada para lançar a bola!
+                    </div>
+                </div>
+            </div>
+
+            <div id="pong-scoreboard-screen" class="hidden" style="margin-top: 10px;">
+                <p style="font-size: 0.85rem; color: #7a5e43; font-weight: 600; margin-bottom: 8px;">Tempo esgotado! Pontuação final: <span id="final-score-val" style="color: #7a5e43;">0</span> pts</p>
+                <h4 class="cinzel-font" style="font-size: 0.82rem; color: #e2c2a0; margin: 12px 0 6px; border-bottom: 1px solid rgba(184,154,116,0.3); padding-bottom: 4px;">Quadro de Líderes 🏆</h4>
+                <div id="leaderboard-list" style="max-height: 150px; overflow-y: auto; text-align: left; font-size: 0.78rem; background: rgba(245, 235, 224, 0.3); border-radius: 8px; padding: 8px; margin-bottom: 12px;">
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn btn-secondary" type="button" style="flex: 1; font-size: 0.72rem; padding: 10px;" onclick="restartPongGame()">Jogar Outra Vez 🔄</button>
+                    <button class="btn" type="button" style="flex: 1; font-size: 0.72rem; padding: 10px;" onclick="closeModal('modal-diaper-pong')">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-drawing" class="activity-modal">
+        <div class="activity-modal-content">
+            <span class="close-modal" onclick="closeModal('modal-drawing')">&times;</span>
+            <h3 style="color: #e2c2a0; margin-bottom: 10px;">Desenho em Moldura</h3>
+            <p style="font-size: 0.8rem; margin-bottom: 4px;">O seu nome:</p>
+            <input type="text" id="draw-name" class="input-participant" placeholder="Escreva o seu nome...">
+            
+            <p style="font-size: 0.8rem; margin-bottom: 4px;">Escolha a cor do pincel:</p>
+            <div class="color-palette">
+                <div class="color-swatch active-color" style="background-color: #7a5e43;" onclick="setDrawColor('#7a5e43', this)" title="Castanho Clássico"></div>
+                <div class="color-swatch" style="background-color: #d4af37;" onclick="setDrawColor('#d4af37', this)" title="Dourado"></div>
+                <div class="color-swatch" style="background-color: #5b8db8;" onclick="setDrawColor('#5b8db8', this)" title="Azul Suave"></div>
+                <div class="color-swatch" style="background-color: #9c27b0;" onclick="setDrawColor('#9c27b0', this)" title="Roxo Elegante"></div>
+                <div class="color-swatch" style="background-color: #4caf50;" onclick="setDrawColor('#4caf50', this)" title="Verde Folha"></div>
+                <div class="color-swatch" style="background-color: #000000;" onclick="setDrawColor('#000000', this)" title="Preto"></div>
+            </div>
+
+            <p style="font-size: 0.8rem; margin-bottom: 4px;">Faça a sua arte:</p>
+            <div class="frame-canvas-container">
+                <canvas id="userCanvas" class="drawing-canvas"></canvas>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+                <span style="font-size: 0.75rem; color: #8a7a6f;">Use o dedo/rato</span>
+                <button type="button" class="btn btn-secondary" style="font-size: 0.7rem; padding: 4px 10px; margin: 0;" onclick="clearCanvasDrawing()">Limpar</button>
+            </div>
+            <button class="btn" type="button" style="width: 100%; margin-top: 15px;" onclick="submitActivity('drawing')">Guardar e Moldurar ♡</button>
+        </div>
+    </div>
+
+    <div id="modal-message" class="activity-modal">
+        <div class="activity-modal-content">
+            <span class="close-modal" onclick="closeModal('modal-message')">&times;</span>
+            <h3 style="color: #e2c2a0; margin-bottom: 10px;">Escrever Cartinha</h3>
+            <p style="font-size: 0.8rem; margin-bottom: 4px;">O seu nome:</p>
+            <input type="text" id="msg-name" class="input-participant" placeholder="Escreva o seu nome...">
+            <p style="font-size: 0.8rem; margin-bottom: 4px;">A sua mensagem para o bebé e pais:</p>
+            <textarea id="msg-content" class="input-participant" rows="4" placeholder="Escreva uma mensagem cheia de carinho..."></textarea>
+            <button class="btn" type="button" style="width: 100%;" onclick="submitActivity('message')">Enviar Cartinha ♡</button>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('admin') === 'true') {
+                document.getElementById('btn-test-reveal').classList.remove('hidden');
+            }
+        });
+
+        class SimpleFireworkSimulator {
+            constructor(canvasId) {
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                this.particles = [];
+                this.rockets = [];
+                this.isRunning = false;
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+            }
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+            start() {
+                this.canvas.style.display = 'block';
+                this.isRunning = true;
+                this.animate();
+            }
+            stop() {
+                this.isRunning = false;
+                this.canvas.style.display = 'none';
+                this.particles = [];
+                this.rockets = [];
+            }
+            fadeOutAndStop(callback) {
+                let opacity = 1;
+                let fadeInterval = setInterval(() => {
+                    opacity -= 0.05;
+                    this.canvas.style.opacity = opacity;
+                    if (opacity <= 0) {
+                        clearInterval(fadeInterval);
+                        this.stop();
+                        this.canvas.style.opacity = 1;
+                        if (callback) callback();
+                    }
+                }, 50);
+            }
+            addRocket(targetX, targetY, colors, useShape = false, shapeType = 'circle') {
+                this.rockets.push({
+                    x: Math.random() * this.canvas.width,
+                    y: this.canvas.height,
+                    targetX: targetX,
+                    targetY: targetY,
+                    colors: colors,
+                    speed: 12 + Math.random() * 5,
+                    useShape: useShape,
+                    shapeType: shapeType
+                });
+            }
+            createExplosion(x, y, colors, useShape, shapeType) {
+                let count = 90;
+                let angleStep = (Math.PI * 2) / count;
+                for (let i = 0; i < count; i++) {
+                    let angle = i * angleStep;
+                    let speed = 2 + Math.random() * 5;
+                    let vx = Math.cos(angle) * speed;
+                    let vy = Math.sin(angle) * speed;
+
+                    if (useShape) {
+                        if (shapeType === 'heart') {
+                            let t = angle;
+                            vx = 12 * Math.pow(Math.sin(t), 3);
+                            vy = -(10 * Math.cos(t) - 4 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+                            vx *= 0.25; vy *= 0.25;
+                        } else if (shapeType === 'star') {
+                            let factor = (i % 2 === 0) ? 1.5 : 0.7;
+                            vx *= factor; vy *= factor;
+                        }
+                    }
+
+                    this.particles.push({
+                        x: x, y: y,
+                        vx: vx, vy: vy,
+                        alpha: 1,
+                        decay: 0.012 + Math.random() * 0.015,
+                        color: colors[Math.floor(Math.random() * colors.length)]
+                    });
+                }
+            }
+            animate() {
+                if (!this.isRunning) return;
+                this.ctx.fillStyle = 'rgba(7, 6, 8, 0.25)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+                for (let i = this.rockets.length - 1; i >= 0; i--) {
+                    let r = this.rockets[i];
+                    let dx = r.targetX - r.x;
+                    let dy = r.targetY - r.y;
+                    r.x += dx / 8;
+                    r.y += dy / 8;
+
+                    this.ctx.beginPath();
+                    this.ctx.arc(r.x, r.y, 3, 0, Math.PI * 2);
+                    this.ctx.fillStyle = '#ffffff';
+                    this.ctx.fill();
+
+                    if (Math.abs(dx) < 5 && Math.abs(dy) < 5) {
+                        this.createExplosion(r.targetX, r.targetY, r.colors, r.useShape, r.shapeType);
+                        this.rockets.splice(i, 1);
+                    }
+                }
+
+                for (let i = this.particles.length - 1; i >= 0; i--) {
+                    let p = this.particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.05;
+                    p.alpha -= p.decay;
+
+                    if (p.alpha <= 0) {
+                        this.particles.splice(i, 1);
+                        continue;
+                    }
+
+                    this.ctx.save();
+                    this.ctx.globalAlpha = p.alpha;
+                    this.ctx.beginPath();
+                    this.ctx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
+                    this.ctx.fillStyle = p.color;
+                    this.ctx.fill();
+                    this.ctx.restore();
+                }
+
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        const fwSim = new SimpleFireworkSimulator('fireworks-canvas');
+
+        function closeAllModals() {
+            ['modal-poll', 'modal-diaper-pong', 'modal-drawing', 'modal-message'].forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (modal) modal.style.display = 'none';
+            });
+            if (typeof pongTimer !== 'undefined' && pongTimer) clearInterval(pongTimer);
+            if (typeof window.pongAnimInterval !== 'undefined' && window.pongAnimInterval) clearInterval(window.pongAnimInterval);
+        }
+
+        function showStage(stageId) {
+            ['stage-envelope', 'stage-invitation', 'stage-countdown', 'stage-reveal', 'stage-photobook', 'stage-thanks'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+            const target = document.getElementById(stageId);
+            if (target) target.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function openEnvelope() {
+            showStage('stage-invitation');
+            document.body.classList.remove('dark-mode');
+        }
+
+        function confirmPresence() {
+            showStage('stage-countdown');
+            startCountdownTimer();
+        }
+
+        function resetFlow() {
+            showStage('stage-envelope');
+            document.body.classList.remove('dark-mode');
+        }
+
+        let countdownInterval = null;
+        let simulatedOffset = null;
+
+        function startCountdownTimer() {
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            const eventDate = new Date('2026-09-09T18:00:00').getTime();
+            
+            countdownInterval = setInterval(() => {
+                const now = new Date().getTime();
+                let diff = eventDate - now;
+
+                if (diff <= 0) {
+                    if (!simulatedOffset) {
+                        simulatedOffset = now;
+                    }
+                    const elapsedSinceOpen = Math.floor((now - simulatedOffset) / 1000);
+                    let remainingSimulatedSecs = 20 - elapsedSinceOpen;
+
+                    if (remainingSimulatedSecs < 0) {
+                        remainingSimulatedSecs = 0;
+                        clearInterval(countdownInterval);
+                        startCinematicFireworksSequence();
+                        return;
+                    }
+
+                    document.getElementById('cd-days').textContent = '00';
+                    document.getElementById('cd-hours').textContent = '00';
+                    document.getElementById('cd-mins').textContent = '00';
+                    document.getElementById('cd-secs').textContent = String(remainingSimulatedSecs).padStart(2, '0');
+                    return;
+                }
+
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('cd-days').textContent = String(days).padStart(2, '0');
+                document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('cd-mins').textContent = String(mins).padStart(2, '0');
+                document.getElementById('cd-secs').textContent = String(secs).padStart(2, '0');
+            }, 1000);
+        }
+
+        function startCinematicFireworksSequence() {
+            if (countdownInterval) clearInterval(countdownInterval);
+            if (storkHideTimer) clearTimeout(storkHideTimer);
+            if (storkShowTimer) clearTimeout(storkShowTimer);
+            
+            closeAllModals();
+
+            document.getElementById('whack-stork-container').style.display = 'none';
+            document.getElementById('stork-alert-banner').style.display = 'none';
+            document.getElementById('stork-countdown-overlay').style.display = 'none';
+
+            ['stage-envelope', 'stage-invitation', 'stage-countdown'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+
+            const overlay = document.getElementById('cinematic-overlay');
+            const smoke = document.getElementById('pink-smoke-overlay');
+
+            overlay.classList.add('active');
+
+            setTimeout(() => {
+                fwSim.start();
+
+                setTimeout(() => {
+                    fwSim.addRocket(window.innerWidth / 2, window.innerHeight * 0.3, ['#ffffff', '#f0f0f0', '#e0e0e0'], false, 'circle');
+
+                    setTimeout(() => {
+                        fwSim.addRocket(window.innerWidth * 0.3, window.innerHeight * 0.32, ['#ffffff', '#f8f8f8'], false, 'circle');
+                        setTimeout(() => {
+                            fwSim.addRocket(window.innerWidth * 0.7, window.innerHeight * 0.28, ['#ffffff', '#f0f0f0'], false, 'circle');
+                        }, 300);
+                        setTimeout(() => {
+                            fwSim.addRocket(window.innerWidth * 0.5, window.innerHeight * 0.25, ['#ffffff', '#fafafa'], false, 'circle');
+                        }, 600);
+
+                        setTimeout(() => {
+                            fwSim.fadeOutAndStop(() => {
+                                setTimeout(() => {
+                                    fwSim.start();
+                                    const goldTones = ['#d4af37', '#ffd700', '#daa520', '#ffdf73', '#b8860b', '#f3e5ab', '#e6c659'];
+                                    const shapes = ['circle', 'heart', 'star'];
+
+                                    let massShowInterval = setInterval(() => {
+                                        let randomX = Math.random() * window.innerWidth;
+                                        let randomY = Math.random() * (window.innerHeight * 0.5) + 60;
+                                        let randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+                                        fwSim.addRocket(randomX, randomY, goldTones, true, randomShape);
+                                    }, 300);
+
+                                    setTimeout(() => {
+                                        clearInterval(massShowInterval);
+                                        fwSim.fadeOutAndStop(() => {
+                                            setTimeout(() => {
+                                                smoke.classList.add('active');
+                                                overlay.classList.remove('active');
+                                                document.body.classList.remove('dark-mode');
+
+                                                setTimeout(() => {
+                                                    smoke.classList.remove('active');
+                                                    
+                                                    setTimeout(() => {
+                                                        document.getElementById('stork-alert-banner').style.display = 'block';
+                                                    }, 4000);
+
+                                                }, 3000);
+                                            }, 2000);
+                                        });
+                                    }, 10000);
+                                }, 7000);
+                            });
+                        }, 3000);
+                    }, 3000);
+                }, 5000);
+            }, 2000);
+        }
+
+        let currentStorkVisibilityDuration = 320;
+        let storkShowTimer = null;
+        let storkHideTimer = null;
+        let storkGameStartTime = 0;
+
+        function dismissStorkAlert() {
+            document.getElementById('stork-alert-banner').style.display = 'none';
+            
+            const countdownOverlay = document.getElementById('stork-countdown-overlay');
+            const countdownText = document.getElementById('stork-countdown-text');
+            const countdownNum = document.getElementById('stork-countdown-number');
+            countdownOverlay.style.display = 'flex';
+            
+            countdownText.textContent = "Preparados?";
+            
+            let step = 0;
+            
+            let timer = setInterval(() => {
+                step++;
+                if (step === 1) {
+                    countdownText.textContent = "Boa sorte!";
+                    countdownNum.style.display = "none";
+                } else if (step === 2) {
+                    countdownText.textContent = "";
+                    countdownNum.style.display = "block";
+                    countdownNum.textContent = "3";
+                } else if (step === 3) {
+                    countdownNum.textContent = "2";
+                } else if (step === 4) {
+                    countdownNum.textContent = "1";
+                } else if (step === 5) {
+                    countdownNum.textContent = "VAI!";
+                } else {
+                    clearInterval(timer);
+                    countdownOverlay.style.display = 'none';
+                    countdownNum.style.display = "block";
+                    currentStorkVisibilityDuration = 320;
+                    storkGameStartTime = Date.now();
+                    startStorkCycle();
+                }
+            }, 900);
+        }
+
+        function startStorkCycle() {
+            const stork = document.getElementById('whack-stork-container');
+            
+            const maxX = window.innerWidth - 130;
+            const maxY = window.innerHeight - 130;
+            const randomX = Math.max(20, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(20, Math.floor(Math.random() * maxY));
+            
+            stork.style.left = randomX + 'px';
+            stork.style.top = randomY + 'px';
+            stork.style.display = 'block';
+            stork.style.pointerEvents = 'auto';
+
+            let elapsedTime = (Date.now() - storkGameStartTime) / 1000;
+
+            if (elapsedTime > 30) {
+                currentStorkVisibilityDuration = Math.min(1800, currentStorkVisibilityDuration + 35);
+            }
+
+            storkHideTimer = setTimeout(() => {
+                stork.style.display = 'none';
+                stork.style.pointerEvents = 'none';
+
+                let randomPause = 400 + Math.random() * 500;
+
+                storkShowTimer = setTimeout(() => {
+                    startStorkCycle();
+                }, randomPause);
+
+            }, currentStorkVisibilityDuration);
+        }
+
+        function catchWhackStork(e) {
+            if (e) e.preventDefault();
+            
+            if (storkHideTimer) clearTimeout(storkHideTimer);
+            if (storkShowTimer) clearTimeout(storkShowTimer);
+            
+            const stork = document.getElementById('whack-stork-container');
+            stork.style.pointerEvents = 'none';
+            stork.style.display = 'none';
+
+            confetti({
+                particleCount: 120,
+                spread: 80,
+                origin: { y: 0.6 }
+            });
+
+            showStage('stage-reveal');
+        }
+
+        const photos = [
+            <img src="https://i.supaimg.com/043ca901-a6cf-4d48-a475-1a0b403efffb/90dbdb5f-bdba-4c86-a802-a7a29b921ce9.jpg" alt="Foto do álbum">
+, caption: "legenda" },
+            <img src="https://i.supaimg.com/043ca901-a6cf-4d48-a475-1a0b403efffb/90dbdb5f-bdba-4c86-a802-a7a29b921ce9.jpg" alt="Foto do álbum">
+, caption: "legenda ♡" },
+            <img src="https://i.supaimg.com/043ca901-a6cf-4d48-a475-1a0b403efffb/90dbdb5f-bdba-4c86-a802-a7a29b921ce9.jpg" alt="Foto do álbum">
+, caption: "legenda" },
+            <img src="https://i.supaimg.com/043ca901-a6cf-4d48-a475-1a0b403efffb/90dbdb5f-bdba-4c86-a802-a7a29b921ce9.jpg" alt="Foto do álbum">
+, caption: "legenda" }
+        ];
+        let currentPhotoIndex = 0;
+
+        function startPhotobook() {
+            currentPhotoIndex = 0;
+            showStage('stage-photobook');
+            renderPhoto();
+        }
+
+        function renderPhoto() {
+            if (currentPhotoIndex < photos.length) {
+                document.getElementById('photo-counter').textContent = `FOTO ${currentPhotoIndex + 1} DE ${photos.length}`;
+                document.getElementById('current-photo').src = photos[currentPhotoIndex].url;
+                document.getElementById('current-caption').textContent = photos[currentPhotoIndex].caption;
+            } else {
+                showStage('stage-thanks');
+            }
+        }
+
+        function nextPhoto() {
+            currentPhotoIndex++;
+            renderPhoto();
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        let selectedTeamVote = null;
+        function selectVote(team, element) {
+            document.querySelectorAll('.vote-btn').forEach(btn => btn.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedTeamVote = team;
+        }
+
+        function submitActivity(type) {
+            alert('Enviado com sucesso! Obrigado pelo carinho ♡');
+            if (type === 'poll') closeModal('modal-poll');
+            if (type === 'drawing') closeModal('modal-drawing');
+            if (type === 'message') closeModal('modal-message');
+        }
+
+        const canvas = document.getElementById('userCanvas');
+        const ctx = canvas.getContext('2d');
+        let painting = false;
+
+        function setupCanvas() {
+            if (!canvas) return;
+            canvas.width = canvas.parentElement.clientWidth - 20;
+            canvas.height = 160;
+            ctx.strokeStyle = '#7a5e43';
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+        }
+        window.addEventListener('load', setupCanvas);
+
+        function setDrawColor(color, element) {
+            ctx.strokeStyle = color;
+            document.querySelectorAll('.color-swatch').forEach(swatch => swatch.classList.remove('active-color'));
+            element.classList.add('active-color');
+        }
+
+        if (canvas) {
+            canvas.addEventListener('mousedown', startDraw);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDraw);
+            canvas.addEventListener('touchstart', (e) => { startDraw(e.touches[0]); e.preventDefault(); }, {passive: false});
+            canvas.addEventListener('touchmove', (e) => { draw(e.touches[0]); e.preventDefault(); }, {passive: false});
+            canvas.addEventListener('touchend', stopDraw);
+        }
+
+        function startDraw(e) {
+            painting = true;
+            ctx.beginPath();
+            const rect = canvas.getBoundingClientRect();
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        }
+        function draw(e) {
+            if (!painting) return;
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            ctx.stroke();
+        }
+        function stopDraw() { painting = false; }
+        function clearCanvasDrawing() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        let pongTimer = null;
+        let pongTimeLeft = 120;
+        let pongScore = 0;
+        let diaperPos = 50;
+        let diaperDir = 1;
+        let diaperGameScores = [];
+
+        function startDiaperGame() {
+            const name = document.getElementById('pong-player-name').value.trim();
+            if (!name) {
+                alert('Por favor, insira o seu nome antes de jogar!');
+                return;
+            }
+            document.getElementById('pong-current-player').textContent = name;
+            document.getElementById('pong-setup-screen').classList.add('hidden');
+            document.getElementById('pong-game-screen').classList.remove('hidden');
+            
+            pongTimeLeft = 120;
+            pongScore = 0;
+            document.getElementById('pong-score').textContent = pongScore;
+            
+            pongTimer = setInterval(() => {
+                pongTimeLeft--;
+                let mins = String(Math.floor(pongTimeLeft / 60)).padStart(2, '0');
+                let secs = String(pongTimeLeft % 60).padStart(2, '0');
+                document.getElementById('pong-timer').textContent = `${mins}:${secs}`;
+
+                if (pongTimeLeft <= 0) {
+                    clearInterval(pongTimer);
+                    endDiaperGame(name, pongScore);
+                }
+            }, 1000);
+
+            window.pongAnimInterval = setInterval(() => {
+                if (pongTimeLeft <= 0) {
+                    clearInterval(window.pongAnimInterval);
+                    return;
+                }
+                const arenaWidth = document.getElementById('pong-arena').clientWidth;
+                
+                let elapsed = 120 - pongTimeLeft;
+                let currentSpeed = 3.0 + (elapsed * 0.05);
+
+                diaperPos += currentSpeed * diaperDir;
+                if (diaperPos > arenaWidth - 70 || diaperPos < 10) diaperDir *= -1;
+                document.getElementById('moving-diaper').style.left = diaperPos + 'px';
+            }, 50);
+        }
+
+        function shootPongBall(e) {
+            if (pongTimeLeft <= 0) return;
+            const arena = document.getElementById('pong-arena').getBoundingClientRect();
+            const clickX = e.clientX - arena.left;
+            const ball = document.getElementById('pong-ball');
+            
+            ball.style.display = 'block';
+            ball.style.left = clickX + 'px';
+            ball.style.top = '10px';
+            
+            ball.style.background = Math.random() > 0.5 ? '#fffcf7' : '#d4b896';
+            ball.style.border = '1px solid #b89a74';
+
+            let currentTop = 10;
+            let fallInterval = setInterval(() => {
+                currentTop += 12;
+                ball.style.top = currentTop + 'px';
+
+                if (currentTop >= 180) {
+                    clearInterval(fallInterval);
+                    ball.style.display = 'none';
+                    
+                    const diaperLeft = diaperPos;
+                    const diaperRight = diaperPos + 60;
+                    if (clickX >= diaperLeft && clickX <= diaperRight) {
+                        pongScore += 10;
+                        document.getElementById('pong-score').textContent = pongScore;
+                    }
+                }
+            }, 30);
+        }
+
+        function endDiaperGame(playerName, score) {
+            if (window.pongAnimInterval) clearInterval(window.pongAnimInterval);
+            document.getElementById('pong-game-screen').classList.add('hidden');
+            document.getElementById('pong-scoreboard-screen').classList.remove('hidden');
+            document.getElementById('final-score-val').textContent = score;
+            
+            let existingPlayer = diaperGameScores.find(p => p.name.toLowerCase() === playerName.toLowerCase());
+            if (existingPlayer) {
+                existingPlayer.score += score;
+                existingPlayer.plays += 1;
+            } else {
+                diaperGameScores.push({ name: playerName, score: score, plays: 1 });
+            }
+            
+            diaperGameScores.sort((a, b) => b.score - a.score);
+
+            const list = document.getElementById('leaderboard-list');
+            list.innerHTML = '';
+            
+            diaperGameScores.forEach((item, index) => {
+                list.innerHTML += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(184,154,116,0.2);">
+                        <span><strong>${index + 1}.</strong> ${item.name} <small style="color: #8a7a6f;">(${item.plays}x ${item.plays === 1 ? 'jogo' : 'jogos'})</small></span>
+                        <strong style="color: #7a5e43;">${item.score} pts</strong>
+                    </div>
+                `;
+            });
+        }
+
+        function restartPongGame() {
+            document.getElementById('pong-scoreboard-screen').classList.add('hidden');
+            document.getElementById('pong-setup-screen').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
